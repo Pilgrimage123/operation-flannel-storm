@@ -1,4 +1,4 @@
-import type { RunResult, Stats, UpgradeOffer } from "./types";
+import type { RunResult, Stats, UpgradeId, UpgradeOffer } from "./types";
 
 export type BusMap = {
   "engine-ready": null;
@@ -7,7 +7,7 @@ export type BusMap = {
   "stats-update": Stats;
   "trigger-level-up": UpgradeOffer[];
   "game-over": RunResult;
-  "select-upgrade": string;
+  "select-upgrade": UpgradeId;
   "level-clear": null;
   "toggle-stealth": null;
   "joystick-move": { x: number; y: number };

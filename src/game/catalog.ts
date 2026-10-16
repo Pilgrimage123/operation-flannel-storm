@@ -90,15 +90,26 @@ export function offerFor(id: UpgradeId, rank: number): UpgradeOffer {
       maxRank: WEAPON_MAX,
     };
   }
-  const passive = PASSIVES.find((p) => p.id === id)!;
+  const passive = PASSIVES.find((p) => p.id === id);
+  if (passive) {
+    return {
+      id,
+      kind: "passive",
+      name: passive.name,
+      blurb: `RANK ${rank}`,
+      detail: passive.detail,
+      rank,
+      maxRank: PASSIVE_MAX,
+    };
+  }
   return {
-    id,
-    kind: "passive",
-    name: passive.name,
-    blurb: `RANK ${rank}`,
-    detail: passive.detail,
-    rank,
-    maxRank: PASSIVE_MAX,
+    id: "bren",
+    kind: "weapon",
+    name: "Field Rations",
+    blurb: "SUPPLY DROP",
+    detail: "Emergency supplies to keep the General fighting.",
+    rank: 1,
+    maxRank: 1,
   };
 }
 

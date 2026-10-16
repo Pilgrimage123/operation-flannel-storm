@@ -4,7 +4,7 @@ import { PASSIVES, WEAPONS } from "@/game/catalog";
 import { bus } from "@/game/eventBus";
 import { formatTime, loadSave, patchSettings, recordRun } from "@/game/save";
 import { synth } from "@/game/audio";
-import type { RunResult, SaveData, Stats, UpgradeOffer } from "@/game/types";
+import type { RunResult, SaveData, Stats, UpgradeId, UpgradeOffer } from "@/game/types";
 
 const blankSave = (): SaveData => ({
   version: 1,
@@ -423,13 +423,15 @@ function PlayChrome({
   onMute: () => void;
   onPause: () => void;
   onResume: () => void;
-  onChoose: (id: string) => void;
+  onChoose: (id: UpgradeId) => void;
   onAgain: () => void;
   onMenu: () => void;
 }) {
   const hpPct = stats ? Math.max(0, Math.min(100, (stats.hp / stats.maxHp) * 100)) : 100;
   const xpPct = stats ? Math.max(0, Math.min(100, (stats.xp / stats.xpNeed) * 100)) : 0;
   const batPct = stats ? Math.max(0, Math.min(100, (stats.battery / stats.maxBattery) * 100)) : 100;
+  const maxStacks = stats ? Math.max(1, Math.floor(stats.maxBattery / 0.5)) : 10;
+  const overPct = stats ? Math.max(0, Math.min(100, (stats.overcharge / maxStacks) * 100)) : 0;
   const charge = `${batPct}%`;
   const portrait = stats?.stealth ? "/sprites/portrait-stealth.png" : "/sprites/portrait-loud.png";
 
@@ -482,7 +484,7 @@ function PlayChrome({
         <div className="hud-card meter">
           <span>ARTICLE 5</span>
           <div className="track">
-            <i className="fill-ov" style={{ width: `${Math.min(100, (stats?.overcharge ?? 0) * 12.5)}%` }} />
+            <i className="fill-ov" style={{ width: `${overPct}%` }} />
           </div>
           <b>x{(stats?.multiplier ?? 1).toFixed(2)}</b>
         </div>

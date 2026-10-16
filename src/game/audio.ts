@@ -70,9 +70,28 @@ export class Synth {
     this.tone(440, 0.16, "square", 0.05);
   }
 
+  private timers: number[] = [];
+
+  stop() {
+    if (typeof window !== "undefined") {
+      for (const t of this.timers) window.clearTimeout(t);
+    }
+    this.timers = [];
+  }
+
+  setMuted(m: boolean) {
+    this.muted = m;
+    if (m) this.stop();
+  }
+
   level() {
+    if (this.muted || typeof window === "undefined") return;
     [523, 659, 784, 1046].forEach((f, i) => {
-      window.setTimeout(() => this.tone(f, 0.12, "square", 0.05), i * 70);
+      const id = window.setTimeout(() => {
+        this.tone(f, 0.12, "square", 0.05);
+        this.timers = this.timers.filter((t) => t !== id);
+      }, i * 70);
+      this.timers.push(id);
     });
   }
 
@@ -89,8 +108,13 @@ export class Synth {
   }
 
   fanfare() {
+    if (this.muted || typeof window === "undefined") return;
     [392, 523, 659, 784].forEach((f, i) => {
-      window.setTimeout(() => this.tone(f, 0.14, "triangle", 0.05), i * 90);
+      const id = window.setTimeout(() => {
+        this.tone(f, 0.14, "triangle", 0.05);
+        this.timers = this.timers.filter((t) => t !== id);
+      }, i * 90);
+      this.timers.push(id);
     });
   }
 
